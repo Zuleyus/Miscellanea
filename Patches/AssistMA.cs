@@ -8,11 +8,9 @@ namespace Miscellanea.Patches;
 
 [HarmonyPatch]
 public static class AssistMA {
-
 	public static ConfigEntry<KeyCode> TargetMainAssistKey;
 
 	static AssistMA() {
-
 		TargetMainAssistKey = Miscellanea.Instance.Config.Bind(
 			"Assist MA",
 			"Target MainAssist Key",
@@ -23,12 +21,10 @@ public static class AssistMA {
 
 	[HarmonyPrefix, HarmonyPatch(typeof(PlayerControl), "TargetHotkeys")]
 	static void PlayerControl_TargetHotkeys_Prefix(PlayerControl __instance) {
-		if (Input.GetKeyDown(KeyCode.T)) {
-			if (GameData.SimPlayerGrouping.MainAssist.MyStats.Myself.MyNPC.CurrentAggroTarget is not null) {
-				__instance.CurrentTarget?.UntargetMe();
-				__instance.CurrentTarget = GameData.SimPlayerGrouping.MainAssist.MyStats.Myself.MyNPC.CurrentAggroTarget;
-				__instance.CurrentTarget.TargetMe();
-			}
+		if (Input.GetKeyDown(AssistMA.TargetMainAssistKey.Value) && GameData.SimPlayerGrouping.MainAssist.MyStats.Myself.MyNPC.CurrentAggroTarget is not null) {
+			__instance.CurrentTarget?.UntargetMe();
+			__instance.CurrentTarget = GameData.SimPlayerGrouping.MainAssist.MyStats.Myself.MyNPC.CurrentAggroTarget;
+			__instance.CurrentTarget.TargetMe();
 		}
 	}
 }

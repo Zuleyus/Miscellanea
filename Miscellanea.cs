@@ -24,17 +24,16 @@ public static class PluginInfo {
  */
 
 [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
-public class Miscellanea : BaseUnityPlugin
-{
+public class Miscellanea : BaseUnityPlugin {
 	public static Miscellanea Instance { get; private set; }
 
-	private void Awake()
-	{
+	private void Awake() {
+		Instance = this;
+
 		var harmony = new Harmony(PluginInfo.PLUGIN_GUID);
 		harmony.PatchAll();
 
-		Instance = this;
-		Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
+		Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_NAME} is loaded!");
 	}
 
 
@@ -43,31 +42,23 @@ public class Miscellanea : BaseUnityPlugin
 		UpdateSocialLog.LogAdd(payload as string);
 	}
 
-	internal static void Log(object payload) {
+	internal static void Log(object payload) =>
 #if DEBUG
 		LogMsg(payload);
 #else
 		LogInfo(payload);
 #endif
-	}
 
-	internal static void LogWarning(object payload) {
-		Instance.Logger.Log(LogLevel.Warning, payload);
-	}
+	internal static void LogWarning(object payload) => Instance.Logger.Log(LogLevel.Warning, payload);
 
-	internal static void LogMsg(object payload) {
-		Instance.Logger.Log(LogLevel.Message, payload);
-	}
+	internal static void LogMsg(object payload) => Instance.Logger.Log(LogLevel.Message, payload);
 
-	internal static void LogInfo(object payload) {
-		Instance.Logger.Log(LogLevel.Info, payload);
-	}
+	internal static void LogInfo(object payload) => Instance.Logger.Log(LogLevel.Info, payload);
 
-	internal static void LogDebug(object payload) {
+	internal static void LogDebug(object payload) =>
 #if DEBUG
 		LogInfo(payload);
 #else
 		Instance.Logger.Log(LogLevel.Debug, payload);
 #endif
-	}
 }
